@@ -604,7 +604,7 @@ void FMM_Tree<FMM_Mat_t>::DownwardPass() {
       sctl::Profile::Tic(level_str.str().c_str(),&this->Comm(),false,5);
 
       sctl::Profile::Tic("Precomp",&this->Comm(),false,5);
-      {// Precomp U
+      if(!skip_ulist){// Precomp U
         sctl::Profile::Tic("Precomp-U",&this->Comm(),false,10);
         fmm_mat->SetupPrecomp(setup_data[i+sctl::MAX_DEPTH*0],device);
         sctl::Profile::Toc();
@@ -659,7 +659,7 @@ void FMM_Tree<FMM_Mat_t>::DownwardPass() {
       sctl::Profile::Toc();
     }
 
-    {// U-List
+    if(!skip_ulist){// U-List
       sctl::Profile::Tic("U-List",&this->Comm(),false,5);
       fmm_mat->U_List(setup_data[i+sctl::MAX_DEPTH*0], device);
       sctl::Profile::Toc();

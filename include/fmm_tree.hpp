@@ -116,6 +116,16 @@ class FMM_Tree: public MPI_Tree<typename FMM_Mat_t::FMMNode_t>{
   // registration while the host buffers are still mapped.
   std::vector<DeviceMirror> node_data_buff_mirror;
   std::vector<DeviceMirror> precomp_lst_mirror;
+
+  /**
+   * \brief Leave out the U-list, the direct interactions between adjacent leaves (the near field), for a caller that
+   * sums it itself. The coordinates PVFMM holds are mapped into the unit cube and rounded, so a pair a distance r
+   * apart is off by ~1e-16/r relative in the U-list; a caller that keeps the original coordinates can sum the near
+   * field at full precision, from the lists of each target leaf (interac_list[U0_Type], [U1_Type], [U2_Type]) and the
+   * leaves' scatter indices. The U-list is still set up (its output data are the target potentials), only not
+   * evaluated. Set before RunFMM.
+   */
+  bool skip_ulist = false;
 };
 
 }//end namespace
